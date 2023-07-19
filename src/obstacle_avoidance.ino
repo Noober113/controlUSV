@@ -1,110 +1,163 @@
 void obstacle_avodance() {
   switch (state_avodance) {
     case 0:
-      if (distance_1 < 30) {
-        if (distance_2 < 30||distance_4 < 30) {
-          if (distance_3 < 30) {
+      if (distance_1 < obtacle_distance) {
+        if (distance_2 < obtacle_distance || distance_4 < obtacle_distance) {
+          if (distance_3 < obtacle_distance) {
             Serial.println("Go backward");
             backward(20);
             state_avodance = 0;
-            break;
           } else {
             state_avodance = 1;
-            break;
           }
         } else {
-          if (distance_3 < 30) {
+          if (distance_3 < obtacle_distance) {
             state_avodance = 3;
-            break;  //mui tau
+            //mui tau
           } else {
             state_avodance = 1;
-            break;
           }
         }
       } else {
-        //Serial.println("Done");
         state_avodance = 2;
-        break;
       }
       break;
     case 1:
-      if (distance_1 < 30) {
-        if (distance_2 < 30||distance_4 < 30) {
+      if (distance_1 < obtacle_distance) {
+        if (distance_2 < obtacle_distance) {
           Serial.println("turn right");
-          turn_right(20);  //increase speed
-          state_avodance = 1;
+          turn_right(5);  //increase speed
+          state_avodance = 0;
         } else {
-          Serial.println("Increase speed in 10s");
-          go_ahead(20);
-          delay(10000);
-          if(cap180<170 && distanceToNextPoint >20){
-            Serial.println("Location near obtackle");
-            j=j+1;
-            state=1;
-            break;                       
-          }
-          state_avodance = 1;
-          break;  //mui tau
+          Serial.println("turn right");
+          turn_right(5);
+          state_avodance = 0;
         }
       } else {
-        if (distance_2 < 30||distance_4 < 30) {
-          Serial.println("Turn right");
-          turn_right(15);
-          state_avodance = 1;
-          break;
+        if (distance_2 < obtacle_distance) {
+          if (distance_4 < obtacle_distance) {
+            Serial.println("turn right");
+            turn_right(5);
+            state_avodance = 0;
+          } else {
+            Serial.println("Turn right");
+            turn_right(5);
+            state_avodance = 0;
+          }
+        } else if (distance_4 < obtacle_distance) {
+          Serial.println("Turn left");
+          turn_left(270);
+          state_avodance = 0;
         } else {
           Serial.println("Done");
+          delay(100);
+          analogWrite(pinMotorT, 10);
+          pcf_MUI.digitalWrite(P0, 1);
+          pcf_MUI.digitalWrite(P1, 1);
           state = 1;
+          state_avodance = 0;
           break;
         }
       }
       break;
     case 2:
-      if (distance_3 < 30) {
-        if (distance_2 < 30||distance_4 < 30) {
+      if (distance_3 < obtacle_distance) {
+        if (distance_2 < obtacle_distance || distance_4 < obtacle_distance) {
           Serial.println("turn left");
-          turn_left(20);  //increase speed
-          state_avodance = 2;
+          turn_left(350);  //increase speed
+          state_avodance = 0;
         } else {
-          Serial.println("Turn right");
-          turn_right(15);
-          state_avodance = 2;
-          break;  //mui tau
+          Serial.println("turn left");
+          turn_left(350);
+          analogWrite(pinMotorL, 75);
+          analogWrite(pinMotorR, 15);
+          // Serial.println("Increase speed");
+          // go_ahead(17);
+          state_avodance = 0;
+          //mui tau
         }
       } else {
-        if (distance_2 < 30||distance_4 < 30) {
+        if (distance_2 < obtacle_distance) {
+          if (distance_4 < obtacle_distance) {
+            Serial.println("Turn right");
+            turn_right(5);
+            state_avodance = 0;
+          } else {
+            Serial.println("Turn right");
+            turn_right(90);
+            analogWrite(pinMotorL, 75);
+            analogWrite(pinMotorR, 15);
+            state_avodance = 0;
+          }
+        } else if (distance_4 < obtacle_distance) {
           Serial.println("Turn left");
-          turn_left(15);
-          state_avodance = 1;
-          break;
+          turn_left(270);
+          analogWrite(pinMotorL, 75);
+          analogWrite(pinMotorR, 15);
+          state_avodance = 0;
         } else {
           Serial.println("Done");
+          analogWrite(pinMotorT, 10);
+          delay(100);
+          pcf_MUI.digitalWrite(P0, 1);
+          pcf_MUI.digitalWrite(P1, 1);
           state = 1;
+          state_avodance = 0;
           break;
         }
       }
       break;
     case 3:
-      if (distance_1 < 30) {
-        if (distance_3 < 30) {
+      if (distance_1 < obtacle_distance) {
+        if (distance_3 < obtacle_distance) {
           Serial.println("Increase Speed");
-          go_ahead(20);  //increase speed
-          state_avodance = 3;
+          go_ahead(13);  //increase speed
+          state_avodance = 0;
+          if (distance_3 < 30) {
+            control_servo(180);
+          }
+          if (distance_1 < 30) {
+            control_servo(165);
+            analogWrite(pinMotorL, 75);
+            analogWrite(pinMotorR, 15);
+          }
         } else {
-          Serial.println("Turn right");
-          turn_right(15);
-          state_avodance = 2;
-          break;  //mui tau
+          Serial.println("turn right");
+          turn_right(90);
+          // Serial.println("Increase Speed");
+          // go_ahead(17);
+          analogWrite(pinMotorL, 75);
+          analogWrite(pinMotorR, 15);
+          state_avodance = 0;
         }
       } else {
-        if (distance_2 < 30||distance_4 < 30) {
+        if (distance_2 < obtacle_distance) {
+          if (distance_4 < obtacle_distance) {
+            Serial.println("Turn right");
+            turn_right(5);
+            state_avodance = 0;
+          } else {
+            Serial.println("Turn right");
+            turn_right(5);
+            analogWrite(pinMotorL, 75);
+            analogWrite(pinMotorR, 15);
+            state_avodance = 0;
+          }
+        } else if (distance_4 < obtacle_distance) {
           Serial.println("Turn left");
-          turn_left(15);
-          state_avodance = 1;
-          break;
+          turn_left(270);
+          analogWrite(pinMotorL, 75);
+          analogWrite(pinMotorR, 15);
+          state_avodance = 0;
         } else {
           Serial.println("Done");
+          analogWrite(pinMotorT, 10);
+          delay(100);
+          pcf_MUI.digitalWrite(P0, 1);
+          pcf_MUI.digitalWrite(P1, 1);
+          
           state = 1;
+          state_avodance = 0;
           break;
         }
       }

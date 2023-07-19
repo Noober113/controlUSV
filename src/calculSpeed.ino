@@ -7,7 +7,7 @@ void calculSpeed() {
   if (distanceToNextPoint >= 20)  //Plus de 3km
   {
     if (speed_edit.toInt() == 0) {
-      speed_set = 17;
+      speed_set = 15;
     } else {
       speed_set = speed_edit.toInt();
     }

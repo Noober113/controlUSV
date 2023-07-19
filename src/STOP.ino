@@ -3,62 +3,45 @@
  */
 void STOP() {
   state = 0;
-  analogWrite(pinMotorL, 10);
-  analogWrite(pinMotorR, 70);
+  analogWrite(pinMotorL, 70);
+  analogWrite(pinMotorR, 10);
   Serial.println("MOTORR L AND R : 10 and 70");
   Serial.println("*************************STOP*************************");
 }
 
 void go_ahead(int speed_set) {
-  analogWrite(pinMotorL, 10);
-  analogWrite(pinMotorR, 70);
-  delay(500);
   pcf8574.digitalWrite(P4, 1); //left motor
   pcf8574.digitalWrite(P5, 1); //left motor
   pcf8574.digitalWrite(P6, 1); //right motor
   pcf8574.digitalWrite(P7, 1);
-  analogWrite(pinMotorL, speed_set);       //io2
-  analogWrite(pinMotorR, speed_set + 60);  //io0
+  control_servo(180);
+  analogWrite(pinMotorR, speed_set);       //io2
+  analogWrite(pinMotorL, speed_set + 60);  //io0
   Serial.println("Go ahead");
 }
-void turn_right(int speed_set) {
-  pca9685.setPWM(SER0, 0, 10);  //turn right 
-  pca9685.setPWM(SER1, 0, 10);  //turn right
-  delay(500);
-  analogWrite(pinMotorL, 15);
-  analogWrite(pinMotorR, 75);
-  // pcf8574.digitalWrite(P4, 1); //left motor
-  // pcf8574.digitalWrite(P5, 1); //left motor
-  // pcf8574.digitalWrite(P6, 0); //right motor
-  // pcf8574.digitalWrite(P7, 0); //right motor
-  // analogWrite(pinMotorL, speed_set);  //io2
-  // analogWrite(pinMotorR, 70);         //io0
-
+void turn_right(int angle) {
+  control_servo(angle);//5
+  analogWrite(pinMotorL, 73);
+  analogWrite(pinMotorR, 13);
+  pcf_MUI.digitalWrite(P0, 0);
+  pcf_MUI.digitalWrite(P1, 0); //left motor
+  analogWrite(pinMotorT,  speed_motorT.toInt()+3);  
   Serial.println("Turn right");
 }
-void turn_left(int speed_set) {
-  pca9685.setPWM(SER0, 0, 170);  //turn right 
-  pca9685.setPWM(SER1, 0, 170);  //turn right
-  delay(500);
-  analogWrite(pinMotorL, 15);
-  analogWrite(pinMotorR, 75);
-  // pcf8574.digitalWrite(P4, 0); //left motor
-  // pcf8574.digitalWrite(P5, 0); //left motor
-  // pcf8574.digitalWrite(P6, 1); //right motor
-  // pcf8574.digitalWrite(P7, 1); //right motor
-  // analogWrite(pinMotorR, 10);         //io2
-  // analogWrite(pinMotorL, speed_set);  //io0
+void turn_left(int angle) {
+  control_servo(angle);//270
+  analogWrite(pinMotorL, 73);
+  analogWrite(pinMotorR, 13);
+  pcf_MUI.digitalWrite(P0, 1);
+  pcf_MUI.digitalWrite(P1, 1);
+  analogWrite(pinMotorT, speed_motorT.toInt()+3);         
   Serial.println("Turn left");
 }
 void backward(int speed_set) {
-  analogWrite(pinMotorL, 10);
-  analogWrite(pinMotorR, 70);
-  delay(500);
-  pcf8574.digitalWrite(P4, 0); //left motor
-  pcf8574.digitalWrite(P5, 0); //left motor
-  pcf8574.digitalWrite(P6, 0); //right motor
-  pcf8574.digitalWrite(P7, 0); //right motor
-  analogWrite(pinMotorR, speed_set);         //io2
-  analogWrite(pinMotorL, speed_set);  //io0
+  analogWrite(pinMotorL, 70);
+  analogWrite(pinMotorR, 10);
+  delay(200);
+  control_servo(180);
+  //analogWrite(pinMotorL, speed_set);  //io0
   Serial.println("backward");
 }
