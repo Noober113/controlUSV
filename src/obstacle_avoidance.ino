@@ -4,9 +4,24 @@ void obstacle_avodance() {
       if (distance_1 < obtacle_distance) {
         if (distance_2 < obtacle_distance || distance_4 < obtacle_distance) {
           if (distance_3 < obtacle_distance) {
-            Serial.println("Go backward");
-            backward(20);
+            analogWrite(pinMotorT, 0);
+            analogWrite(pinMotorL, 0);
+            analogWrite(pinMotorR, 0);
+            Serial.println("Stop!!!!!");
+            adresseHttp = "http://" + ipRas + ":" + port + "/api/esp/post-status?obtacle=1";
+            Serial.println(adresseHttp);
+            http.begin(client, adresseHttp);
+            httpCode = http.POST("");
+            http.end();
+
+            adresseHttp = "http://" + ipRas + ":" + port + "/api/esp/delete-coor";
+            http.begin(client, adresseHttp);
+            httpCode = http.POST("");
+            Serial.println(httpCode);
             state_avodance = 0;
+            http.end();
+            j=0;
+            state=0;
           } else {
             state_avodance = 1;
           }
@@ -26,11 +41,11 @@ void obstacle_avodance() {
       if (distance_1 < obtacle_distance) {
         if (distance_2 < obtacle_distance) {
           Serial.println("turn right");
-          turn_right(5);  //increase speed
+          turn_right(10);  //increase speed
           state_avodance = 0;
         } else {
           Serial.println("turn right");
-          turn_right(5);
+          turn_right(10);
           state_avodance = 0;
         }
       } else {
@@ -110,17 +125,42 @@ void obstacle_avodance() {
     case 3:
       if (distance_1 < obtacle_distance) {
         if (distance_3 < obtacle_distance) {
-          Serial.println("Increase Speed");
-          go_ahead(13);  //increase speed
           state_avodance = 0;
           if (distance_3 < 30) {
-            control_servo(180);
+            if(distance_1 < 30)
+            {
+              analogWrite(pinMotorT, 0);
+              analogWrite(pinMotorL, 0);
+              analogWrite(pinMotorR, 0);
+              Serial.println("Stop!!!!!");
+              adresseHttp = "http://" + ipRas + ":" + port + "/api/esp/post-status?obtacle=1";
+              Serial.println(adresseHttp);
+              http.begin(client, adresseHttp);
+              httpCode = http.POST("");
+              http.end(); 
+              adresseHttp = "http://" + ipRas + ":" + port + "/api/esp/delete-coor";
+              http.begin(client, adresseHttp);
+              httpCode = http.POST("");
+              Serial.println(httpCode);
+              state_avodance = 0;
+              http.end();
+              state=0;
+              j=0;
+            }
+            else{
+              control_servo(215);//turn lèt
+            }
           }
-          if (distance_1 < 30) {
-            control_servo(165);
+          else if (distance_1 < 30) {
+            control_servo(160);//turn rught
             analogWrite(pinMotorL, 75);
             analogWrite(pinMotorR, 15);
           }
+          else{
+            control_servo(180);
+            analogWrite(pinMotorL, 75);
+            analogWrite(pinMotorR, 15);
+            }
         } else {
           Serial.println("turn right");
           turn_right(90);
@@ -155,7 +195,6 @@ void obstacle_avodance() {
           delay(100);
           pcf_MUI.digitalWrite(P0, 1);
           pcf_MUI.digitalWrite(P1, 1);
-          
           state = 1;
           state_avodance = 0;
           break;

@@ -4,8 +4,7 @@
 /*                                                                                                           */
 /*************************************************************************************************************/
 
-
-/*******Librairie Server ********/
+/*******Library Server ********/
 #include "ESP8266WiFi.h"       // for WIFI connexion
 #include "FS.h"                // for mount file inside the flash
 #include <ESP8266WebServer.h>  // for http communication
@@ -13,36 +12,30 @@
 #include <ESP8266HTTPClient.h>  // for http client server communication
 #include <WiFiClient.h>         // for http client communication WIFI
 
-
-/*******Librairie GPS ***************/
+/*******Library GPS ***************/
 #include <TinyGPS++.h>       // for calculate the heading the distant between é Points GPS
 #include <TimeLib.h>         // for the date and time
 #include <SoftwareSerial.h>  // for the communication serial withe GPS module
+    
 
-
-
-
-
-//#include <Ultrasonic.h>      // for calculate the distance between the obstacle and the USV
-
-/*******Librairie compass***********/
+/*******Library compass***********/
 #include <Wire.h>                // For the protocole I2C
 #include <Adafruit_Sensor.h>     // For all sensor ardafruit
 #include <Adafruit_HMC5883_U.h>  // for the MAGNETIC COMPAS
 
 
-/*******Librairie IO Expand***********/
+/*******Library IO Expand***********/
 #include "PCF8574.h"
 
 
-/*******Librairie Servo***********/
+/*******Library Servo***********/
 #include <Adafruit_PWMServoDriver.h>
 
 
-/*******Librairie PID***********/
+/*******Library PID***********/
 #include <PID_v1.h>
 
-/*******Librairie ESP_now***********/
+/*******Library ESP_now***********/
 #include <espnow.h>
 /*************************************************************************************************************/
 /*                                                                                                           */
@@ -50,9 +43,8 @@
 /*                                                                                                           */
 /*************************************************************************************************************/
 
-String ipRas = "192.168.43.151";  // IP adress RASPRRY PI AT HOME must  change địa chỉ của web sever bên http://112.197.246.122/(78.114.13.194)  ("112.197.244.231";)
-//String ipMes = "192.168.233.40";
-String port = "8080";  // IP adress RASPRRY PI AT HOME địa chỉ phần host (192, 168, 233, 70) IP adress
+String ipRas = "192.168.43.151";  
+String port = "8080"; 
 
 /*********PWM Motor ************/
 #define pinMotorR 2  //
@@ -66,16 +58,14 @@ String speed_motorT = "0";
 const char* ssid = "redmi note";      //"Bla bla bla";
 const char* password = "1234554321";  //"blablabla01"
 
-
 /**Variable of route*****/
-const int nbLatLng = 15;                               //Max number GPS points
-double latLng[2][nbLatLng], latLng_temp[2][nbLatLng];  //Array 2 dimmension 2*nbLatLng (mang 2 chieu)
-short i = 0;                                           //Lors de la récupération des Lati-Long (lấy)
-short j = 0;                                           //Lors de l'utilisation des Lati-Long (sử dụng)
-String Smessage;                                       // String read
-double Fmessage;                                       //String read converted in float
+const int nbLatLng = 15;                          
+double latLng[2][nbLatLng], latLng_temp[2][nbLatLng];  
+short i = 0;                                           
+short j = 0;                                           
+String Smessage;                                     
+double Fmessage;                                       
 String token;
-
 String SLong;
 double FLat;
 String SDec;
@@ -83,7 +73,7 @@ String SEnt;
 String SLat;
 String SPoint;
 int Latu = 0;
-bool Lat = false;  //Variable pour ranger si les valeurs n'arrivent pas dans l'ordre (lưu trữ ko theo thứ tự)
+bool Lat = false;
 bool Long = false;
 double nextLong, nextLati;
 double latHome, longHome;
@@ -97,12 +87,8 @@ HTTPClient httpEwen;
 String adresseHttp;
 
 
-
-
-
-
 /******Variable of GPS*********/
-#define time_offset 25200  // define a clock offset of 10800 seconds (3 hours) ==> UTC + 3
+#define time_offset 75600  // define a clock offset of 10800 seconds (7 hours) ==> UTC + 7
 char Time[] = "00:00:00";
 char Date[] = "00-00-2000";
 byte last_second, Second, Minute, Hour, Day, Month;
@@ -123,7 +109,6 @@ short cap180_setpoint;
 /***********Variable Boussole**************/
 float actualBoussole = 0;
 
-
 /************Variable motor**************/
 int speed_set = 0;  //toc do se thay doi tuy thuoc vao khaong cach
 bool babord = true, tribord = true;
@@ -137,12 +122,11 @@ int state = 0;
 int etatGPS = 1;
 String status= "0";
 /**************Timer********************/
-unsigned long timerDistance;  //Timer de 5 seconde avant la prochaine messure de distance;
+unsigned long timerDistance;  
 unsigned long timerStop;
-unsigned long timerGps;  //Timer lecture GPS toute les secondes
+unsigned long timerGps;  
 unsigned long timerDebug;
-unsigned long timerPosition;  //Timer Envoie de la position toute les 2 secondes
-
+unsigned long timerPosition;  
 
 /********Variable Servo***************/
 int pwm_temp = 90;
@@ -161,13 +145,11 @@ int distance_1, distance_2, distance_3, distance_4;
 int obtacle_distance = 70;
 int rever_servo = 0;
 
-
 /******Variable PID*********/
 double originalSetpoint = 175.3;
 double setpoint = originalSetpoint;
 double movingAngleOffset = 0.1;
 double input, output;
-
 double Kp = 7;
 double Kd = 0;
 double Ki = 30;
@@ -201,16 +183,16 @@ TinyGPSPlus gps;                   // The TinyGPS++ object
 SoftwareSerial gpsSerial(13, 15);  // configuration gpsSerial library (RX pin, TX pin)
 
 /*************Setup Compass*********************/
-Adafruit_HMC5883_Unified mag = Adafruit_HMC5883_Unified(12345);  // object mag for the magnetic compas
+Adafruit_HMC5883_Unified mag = Adafruit_HMC5883_Unified(12345);  /
 
 /*************Setup sever**********************/
-ESP8266WebServer server(80);  //Configuration du serveur sur le port 80 de l'ESP
+ESP8266WebServer server(80); 
 
 
 /************Setup Wifi**************************/
-IPAddress local_IP(192, 168, 233, 70);  //USV IP cổng lan
-IPAddress gateway(192, 168, 233, 56);   // router
-IPAddress subnet(255, 255, 255, 0);     //
+// IPAddress local_IP(192, 168, 233, 70);  //USV IP cổng lan
+// IPAddress gateway(192, 168, 233, 56);   // router
+// IPAddress subnet(255, 255, 255, 0); 
 WiFiClient client;
 HTTPClient http;
 
@@ -221,8 +203,6 @@ PCF8574 pcf_MUI(0x38);
 /************Setup Driver servo**************************/
 Adafruit_PWMServoDriver pca9685 = Adafruit_PWMServoDriver(0x40);
 
-// const char* serverName = "http://112.197.244.231:8000/GPS-post.php";  //http://112.197.244.231/post-esp-data.php/ip phai lay la ip4 cua may tinh hoac may chu
-// const char* serverName_get = "http://112.197.244.231:8000/getdata.php/";
 
 /******Variable ESP_now*********/
 
@@ -239,7 +219,6 @@ typedef struct struct_message {
   int distance4;
 } struct_message;
 int BOARD_ID = 1;
-// Create a struct_message called DHTReadings to hold sensor readings
 struct_message myData;
 struct_message incomingReadings;
 
@@ -337,22 +316,9 @@ void setup() {
 
   // Register for a callback function that will be called when data is received
   esp_now_register_recv_cb(OnDataRecv);
-
-
-
-
-  // WiFi.begin(ssid, password);
-  // Serial.println("Connecting");
-  // while (WiFi.status() != WL_CONNECTED) {
-  //   delay(500);
-  //   Serial.print(".");
-  // }
-  // Serial.println("");
-  // Serial.print("Connected to WiFi network with IP Address: ");
   analogWrite(pinMotorL, 70);
   analogWrite(pinMotorR, 10);
   analogWrite(pinMotorT, 10);
-  // Serial.println(WiFi.localIP());
 }
 
 void loop() {
@@ -363,15 +329,6 @@ void loop() {
     Serial.println(adresseHttp);
     http.begin(client, adresseHttp);
     httpCode = http.POST("");
-    // http.addHeader("Content-Type", "application/x-www-form-urlencoded");
-    // String httpRequestData = "api_key=" + apiKeyValue + "&value1=" + Latitude
-    //                          + "&value2=" + Longitude;
-    // Serial.print("httpRequestData: ");
-    // Serial.println(httpRequestData);
-    // int httpResponseCode = http.POST(httpRequestData);
-    // Serial.print("httpResponseCode: ");
-    // Serial.println(httpResponseCode);
-    // httpCode = http.GET();
 
     if (httpCode > 0) {
       httpPayload = http.getString();  //String  (LAT_Point1*LONG_Point1/LAT_Point2*LONG_P2/LAT_P3*LONG...) ex :48.409897*-4.487719/48.408658, -4.486261
@@ -410,22 +367,6 @@ void loop() {
         
       }
     }
-    // if (timerPosition1 + 1000 < millis()) {
-    //   timerPosition1=millis();
-    //   adresseHttp = "http://" + ipRas + ":" + port + "/api/esp/round";  // http://192.168.0.2/src/gps/get_gps.php?cordvit=2.293399*48.858860*0*1
-    //   Serial.println(adresseHttp);
-    //   http.begin(client, adresseHttp);
-    //   httpCode = http.GET();
-    //   if (httpCode > 0) {
-    //     httpPayload = http.getString();
-    //     // speed_edit=getValue(httpPayload, '/', 1);
-    //     Serial.print("round: ");
-    //     Serial.println(httpPayload);
-    //     // Serial.print("speed edit: ");
-    //     // Serial.println(speed_edit);
-    //   }
-    //   http.end();
-    // }
     http.end();
     printIncomingReadings();
     
@@ -458,14 +399,13 @@ void loop() {
               for (int ha=0; ha < SDec.length(); ha++){
                 FLat = FLat / 10;    
               }
-              //FLat = FLat / 100000000000000;
               latLng[k][i] = FLat;
               delay(20);
             }
           }
           displayArray();
           http.end();
-          //j=0;
+          j=0;
           state = 1;
         }
       }
@@ -566,8 +506,6 @@ void loop() {
       j = 0;
       break;
     case 5:
-      //Serial.println("Obtacle advoiding");
-      
       obstacle_avodance();
       break;
   }

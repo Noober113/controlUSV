@@ -1,13 +1,3 @@
-/*
-   Reception de la position gps (toute les secondes sinon on vide juste le cache),
-tiếp nhận vị tí gps
-   Enregistre dans les variables Longitude et Latitude la position (ex : Longitude = (-4.4873363))
-   lưu trữ kinh độ và vĩ độ
-   Et dans Latitude10k et Longitude10k la position * 10000 (ex: Longitude = (-44873.363))
-   trong vĩ độ 10k và kinh độ 10k vị tí *1000
-*/
-
-
 void encodeGPS()
 {
   //Serial.print("%");

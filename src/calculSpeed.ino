@@ -4,14 +4,14 @@
    Control les moteurs
 */
 void calculSpeed() {
-  if (distanceToNextPoint >= 20)  //Plus de 3km
+  if (distanceToNextPoint >= 15)  //Plus de 3km
   {
     if (speed_edit.toInt() == 0) {
       speed_set = 15;
     } else {
       speed_set = speed_edit.toInt();
     }
-  } else if (distanceToNextPoint >= 5 && distanceToNextPoint < 20)  // Entre 101m et 3km
+  } else if (distanceToNextPoint >= 5 && distanceToNextPoint < 15)  // Entre 101m et 3km
   {
     if (speed_edit.toInt() == 0) {
       speed_set = 15;
